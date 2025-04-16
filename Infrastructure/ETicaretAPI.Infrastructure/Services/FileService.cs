@@ -22,8 +22,8 @@ namespace ETicaretAPI.Infrastructure.Services
         {
             try
             {
-                await using FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                await fileStream.CopyToAsync(fileStream);
+                await using FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: true);
+                await file.CopyToAsync(fileStream);
                 await fileStream.FlushAsync();
                 return true;
             }
