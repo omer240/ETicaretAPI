@@ -1,11 +1,7 @@
 ﻿using ETicaretAPI.Application.Services;
+using ETicaretAPI.Infrastructure.Operations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ETicaretAPI.Infrastructure.Services
 {
@@ -34,10 +30,25 @@ namespace ETicaretAPI.Infrastructure.Services
             }
 
         }
-
-        public Task<string> FileRenameAsync(string fileName)
+        protected delegate bool HasFile(string pathOrContainerName, string fileName);
+        private async Task<string> FileRenameAsync(string pathOrContainerName, string fileName, HasFile hasFileMethod)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                string extension = Path.GetExtension(fileName);
+                string baseName = NameOperation.CharacterRegulatory(Path.GetFileNameWithoutExtension(fileName));
+                string newFileName = $"{baseName}{extension}";
+                int counter = 1;
+
+                // Dosya var mı kontrolü
+                while (hasFileMethod(pathOrContainerName, newFileName))
+                {
+                    counter++;
+                    newFileName = $"{baseName}-{counter}{extension}";
+                }
+
+                return newFileName;
+            });
         }
 
         public async Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files)
