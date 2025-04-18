@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Application.Repositories.OrderRepository
+namespace ETicaretAPI.Application.Repositories
 {
     public interface IOrderWriteRepository : IWriteRepository<Order>
     {

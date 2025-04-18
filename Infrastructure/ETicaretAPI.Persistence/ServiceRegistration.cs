@@ -1,19 +1,9 @@
-﻿using ETicaretAPI.Application.Repositories.CustomerRepository;
-using ETicaretAPI.Application.Repositories.OrderRepository;
-using ETicaretAPI.Application.Repositories.ProductRepository;
+﻿using ETicaretAPI.Application.Repositories;
+using ETicaretAPI.Application.Repositories.InvoiceFileRepository;
 using ETicaretAPI.Persistence.Contexts;
-using ETicaretAPI.Persistence.Repositories.CustomerRepository;
-using ETicaretAPI.Persistence.Repositories.OrderRepository;
-using ETicaretAPI.Persistence.Repositories.ProductRepository;
+using ETicaretAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ETicaretAPI.Persistence
 {
@@ -29,6 +19,12 @@ namespace ETicaretAPI.Persistence
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository,ProductWriteRepository>();
+            services.AddScoped<IFileReadRepository,FileReadRepository>();
+            services.AddScoped<IFileWriteRepository,FileWriteRepository>();
+            services.AddScoped<IProductImageFileReadRepository,ProductImageFileReadRepository>();
+            services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
+            services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
+            services.AddScoped<IInvoiceFileWriteRepository,InvoiceFileWriteRepository>();
         }
     }
 }

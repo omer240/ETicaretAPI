@@ -30,8 +30,8 @@ namespace ETicaretAPI.Infrastructure.Services
             }
 
         }
-        protected delegate bool HasFile(string pathOrContainerName, string fileName);
-        private async Task<string> FileRenameAsync(string pathOrContainerName, string fileName, HasFile hasFileMethod)
+        //protected delegate bool HasFile(string pathOrContainerName, string fileName);
+        private async Task<string> FileRenameAsync(string pathOrContainerName, string fileName,  Func<string,string,bool> hasFileMethod)
         {
             return await Task.Run(() =>
             {
@@ -51,6 +51,9 @@ namespace ETicaretAPI.Infrastructure.Services
             });
         }
 
+        public bool HasFileTemp(string path, string fileName)
+           => File.Exists($"{path}\\{fileName}");
+
         public async Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files)
         {
             string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
@@ -61,7 +64,7 @@ namespace ETicaretAPI.Infrastructure.Services
             List<bool> results = new();
             foreach (var file in files)
             {
-                string fileNewName = await FileRenameAsync(file.FileName);
+                string fileNewName = await FileRenameAsync(uploadPath, file.FileName, HasFileTemp);
 
                 bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}",file);
                 datas.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));

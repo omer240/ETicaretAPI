@@ -1,8 +1,8 @@
-﻿using ETicaretAPI.Application.Repositories.ProductRepository;
+﻿using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Domain.Entities;
 using ETicaretAPI.Persistence.Contexts;
 
-namespace ETicaretAPI.Persistence.Repositories.ProductRepository
+namespace ETicaretAPI.Persistence.Repositories
 {
     public class ProductWriteRepository : WriteRepository<Product>, IProductWriteRepository
     {
