@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ETicaretAPI.Infrastructure.Services.Storage.Local
 {
-    public class LocalStorage : ILocalStorage
+    public class LocalStorage : Storage , ILocalStorage
     {
         readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -35,13 +35,12 @@ namespace ETicaretAPI.Infrastructure.Services.Storage.Local
  
             foreach (var file in files)
             {
-                bool result = await CopyFileAsync($"{uploadPath}\\{file.FileName}", file);
-                datas.Add((file.Name, $"{path}\\{file.Name}"));
+                string fileNewName = await FileRenameAsync(uploadPath, file.FileName, HasFile);
+
+                await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
+                datas.Add((fileNewName, $"{path}\\{fileNewName}"));
             }
             return datas;
-
-            //todo eğer ki yukarıdaki if geçerli değilse burada dosyaların sunucuda yüklenirken hata alındığına dair uyarıcı bir exception fırlatılması gerekiyor.
-            return null; ;
         }
 
         private async Task<bool> CopyFileAsync(string path, IFormFile file)

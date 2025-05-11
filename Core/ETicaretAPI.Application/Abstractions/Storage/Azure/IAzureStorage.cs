@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ETicaretAPI.Application.Abstractions.Storage.Azure
 {
-    internal interface IAzureStorage
+    public interface IAzureStorage : IStorage
     {
     }
 }
+ 

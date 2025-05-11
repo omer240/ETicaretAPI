@@ -1,7 +1,7 @@
 ﻿using ETicaretAPI.Application.Abstractions.Storage;
 using ETicaretAPI.Infrastructure.Enums;
-using ETicaretAPI.Infrastructure.Services.Azure;
 using ETicaretAPI.Infrastructure.Services.Storage;
+using ETicaretAPI.Infrastructure.Services.Storage.Azure;
 using ETicaretAPI.Infrastructure.Services.Storage.Local;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +15,7 @@ namespace ETicaretAPI.Infrastructure
             servicesCollection.AddScoped<IStorageService, StorageService>();
         }
 
-        public static void AddStorage<T>(this IServiceCollection servicesCollection) where T : class, IStorage
+        public static void AddStorage<T>(this IServiceCollection servicesCollection) where T : Storage, IStorage
         {
             servicesCollection.AddScoped<IStorage, T>();
         }
