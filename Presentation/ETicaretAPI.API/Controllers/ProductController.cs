@@ -7,6 +7,7 @@ using ETicaretAPI.Application.ViewModels.Products;
 using ETicaretAPI.Domain.Entities;
 using ETicaretAPI.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Net;
 
 namespace ETicaretAPI.API.Controllers
@@ -105,25 +106,33 @@ namespace ETicaretAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload(IFormFileCollection formFile)
+        public async Task<IActionResult> Upload(IFormFileCollection formFile, string id)
         {
-            var datas = await _storageService.UploadAsync("resource/files", formFile);
+            List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("photo-images", formFile);
 
-            await _productImageFileWriteRepository.AddRangeAsync(datas.Select(d => new ProductImageFile
+
+              Product product = await _productReadRepository.GetByIdAsync(id);
+
+            //foreach(var r in result)
+            //{
+            //    product.ProductImageFiles.Add(new()
+            //    {
+            //        FileName = r.fileName,
+            //        Path = r.pathOrContainerName,
+            //        Storage = _storageService.StorageName,
+            //        Products = new List<Product>() { product }
+            //    });
+            //}
+
+            _productImageFileWriteRepository.AddRangeAsync(result.Select(r => new ProductImageFile
             {
-                FileName = d.fileName,
-                Path = d.pathOrContainerName,
+                FileName = r.fileName,
+                Path = r.pathOrContainerName,
                 Storage = _storageService.StorageName,
+                Products = new List<Product>() { product }
             }).ToList());
 
-            //var datas = await _fileService.UploadAsync("resource/invoice-images", formFile);
-            //_invoiceFileWriteRepository.AddRangeAsync(datas.Select(d => new InvoiceFile
-            //{
-            //    FileName = d.fileName,
-            //    Path = d.path,
-            //}).ToList());
-            //
-
+            await _productImageFileWriteRepository.SaveAsync();
 
 
             var d1 = _fileReadRepository.GetAll(false);

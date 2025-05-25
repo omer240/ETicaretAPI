@@ -5,6 +5,7 @@ using ETicaretAPI.Domain.Entities;
 using ETicaretAPI.Domain.Entities.Common;
 using ETicaretAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 
 namespace ETicaretAPI.Persistence.Repositories
@@ -21,15 +22,16 @@ namespace ETicaretAPI.Persistence.Repositories
             => _context.Set<T>();
 
 
-        public IQueryable<T> GetAll(bool tracking = true) 
+        public IQueryable<T> GetAll(bool tracking = true)
         {
-           var query = Table.AsQueryable();
-           if(!tracking)
+            var query = Table.AsQueryable(); // Table: DbSet<T> zaten IQueryable<T>
+            if (!tracking)
             {
                 query = query.AsNoTracking();
             }
-           return query;
+            return query;
         }
+
 
         public IQueryable<T> GetWhere(Expression<Func<T, bool>> method, bool tracking = true)
         {
@@ -50,10 +52,13 @@ namespace ETicaretAPI.Persistence.Repositories
         public async Task<T> GetByIdAsync(string id, bool tracking = true)
         {
             //=> await Table.FirstOrDefaultAsync(data => data.Id==Guid.Parse(id));
+
+            var guid = Guid.Parse(id);
             var query = Table.AsQueryable();
             if (!tracking)
                 query = query.AsNoTracking();
-            return await Table.FindAsync(Guid.Parse(id));
+            return await query.FirstOrDefaultAsync(e => e.Id == guid);
+            //return await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == guid);
         }
 
     }

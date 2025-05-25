@@ -43,6 +43,8 @@ namespace ETicaretAPI.Infrastructure.Services.Storage.Azure
 
         public async Task<List<(string fileName, string pathOrContainerName)>> UploadAsync(string containerName, IFormFileCollection files)
         {
+            // GetBlobContainerClient(containerName) metodu, containerName parametresinin değeriyle eşleşen ada sahip bir container'a erişim sağlayacak bir BlobContainerClient nesnesi oluşturur.
+            // Bu metod yalnızca bir referans döner; container'ı oluşturmaz. Eğer container yoksa, işlem yapılmadan önce CreateIfNotExistsAsync() gibi bir metodla oluşturulması gerekir.
             _blobContainerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             await _blobContainerClient.CreateIfNotExistsAsync();
             await _blobContainerClient.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
