@@ -7,6 +7,7 @@ using ETicaretAPI.Application.ViewModels.Products;
 using ETicaretAPI.Domain.Entities;
 using ETicaretAPI.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Net;
 
@@ -141,6 +142,49 @@ namespace ETicaretAPI.API.Controllers
 
             return Ok();
 
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetProductImages(string id)
+        {
+           Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles)
+                .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
+
+            return Ok(product.ProductImageFiles.Select(p => new
+            {
+                p.Path,
+                p.FileName
+            }));
+        }
+
+        [HttpDelete("[action]/{productId}/{imageId}")]
+        public async Task<IActionResult> DeleteProductImage(string productId, string imageId)
+        {
+            IQueryable<Product> query = _productReadRepository.Table
+                .Include(p => p.ProductImageFiles)
+                .Where(p => p.Id == Guid.Parse(productId));
+
+            var productImageFile = await query
+                .SelectMany(p => p.ProductImageFiles)
+                .Where(p => p.Id == Guid.Parse(imageId))
+                .FirstOrDefaultAsync();
+
+            query.FirstOrDefault().ProductImageFiles.Remove(productImageFile);
+            await _productWriteRepository.SaveAsync();
+
+            //        var query = _productReadRepository.Table
+            //.Include(p => p.ProductImageFiles)
+            //.Where(p => p.Id == Guid.Parse(productId));
+
+
+
+            //        ProductImageFile? productImageFile = await _productImageFileReadRepository.Table
+            //.FirstOrDefaultAsync(p => p.Id == Guid.Parse(imageId) &&
+            //                          p.Products.Any(prod => prod.Id == product.Id));
+
+            //ProductImageFile? productImageFile =  product.ProductImageFiles.FirstOrDefault(p => p.Id == Guid.Parse(imageId));
+
+            return Ok();
         }
 
     }
