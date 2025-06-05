@@ -1,18 +1,20 @@
 ﻿using ETicaretAPI.Application.Abstractions.Storage;
+using ETicaretAPI.Application.Interfaces;
 using ETicaretAPI.Infrastructure.Enums;
+using ETicaretAPI.Infrastructure.Services;
 using ETicaretAPI.Infrastructure.Services.Storage;
 using ETicaretAPI.Infrastructure.Services.Storage.Azure;
 using ETicaretAPI.Infrastructure.Services.Storage.Local;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ETicaretAPI.Infrastructure
 {
-    public static class ServicesRegistration
+    public static class ServicesRegistration 
     {
         public static void AddInfrastructureServices(this IServiceCollection servicesCollection)
         {
             servicesCollection.AddScoped<IStorageService, StorageService>();
+            servicesCollection.AddScoped<IQueryPagingService, QueryPagingService>();
         }
 
         public static void AddStorage<T>(this IServiceCollection servicesCollection) where T : Storage, IStorage
