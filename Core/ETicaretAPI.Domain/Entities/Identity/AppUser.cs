@@ -9,6 +9,6 @@ namespace ETicaretAPI.Domain.Entities.Identity
 {
     public class AppUser : IdentityUser
     {
-        public string AdSoyad { get; set; }
+        public string NameSurname { get; set; }
     }
 }
